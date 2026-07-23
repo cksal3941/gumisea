@@ -1,0 +1,117 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ── Header (Layer 4) ─────────────────────────────── */
+
+.site-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 40;
+  padding: 18px 40px;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.main-nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+/* ── Hero section (Layer 1: background) ───────────── */
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  background: url('images/hero-pool-background.png') center / cover no-repeat;
+}
+
+/* ── Product name texts (Layer 2) ─────────────────── */
+
+.product-name {
+  position: absolute;
+  z-index: 10;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 90px;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* "SEY" — left side, flush to left edge */
+.product-sey {
+  left: 16px;
+}
+
+/* "GOLDIE POP" — horizontally centered */
+.product-goldie {
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* "TANGY BLUE" — right side, partially clipped */
+.product-tangy {
+  right: -55px;
+}
+
+/* ── Character images (Layer 3) ───────────────────── */
+
+.hero-char {
+  position: absolute;
+  z-index: 20;
+}
+
+/* Octopus: upper-left, left/top edges clipped */
+.char-octopus {
+  height: 230px;
+  top: -30px;
+  left: -55px;
+}
+
+/* Goldfish: centered, largest */
+.char-goldie {
+  height: 275px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Blue tang: lower-right, right/bottom edges clipped */
+.char-tangy {
+  height: 195px;
+  bottom: -45px;
+  right: -55px;
+}
