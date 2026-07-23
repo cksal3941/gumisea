@@ -4,10 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gumi Sea</title>
+  <link rel="icon" type="image/png" href="images/hero-sey-octopus.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+  <!-- 스크린리더 전용 aria-live 영역 — 상품 전환 알림 -->
+  <div id="carousel-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Layer 4: Header -->
   <header class="site-header">
     <div class="header-inner">
       <a href="#" class="logo">Gumi Sea</a>
@@ -20,16 +28,43 @@
     </div>
   </header>
 
-  <section class="hero">
-    <!-- Layer 2: Product name texts -->
-    <span class="product-name product-sey">SEY</span>
-    <span class="product-name product-goldie">GOLDIE POP</span>
-    <span class="product-name product-tangy">TANGY BLUE</span>
+  <!-- Layer 1: Hero (pool background) -->
+  <section class="hero" tabindex="0" role="region" aria-label="상품 캐러셀">
 
-    <!-- Layer 3: Character images -->
-    <img src="images/hero-sey-octopus.png" alt="SEY" class="hero-char char-octopus">
-    <img src="images/hero-goldie-pop.png" alt="Goldie Pop" class="hero-char char-goldie">
-    <img src="images/hero-tangy-blue.png" alt="Tangy Blue" class="hero-char char-tangy">
+    <!-- Layer 2: 텍스트 캐러셀 노드 4개 — 내용·위치는 JavaScript가 관리 -->
+    <span class="product-name" id="text-0"></span>
+    <span class="product-name" id="text-1"></span>
+    <span class="product-name" id="text-2"></span>
+    <span class="product-name" id="text-3"></span>
+
+<!-- Layer 3: 중앙 물고기 스테이지
+         fish-motion-layer : 상품 전환 transform (진입·중앙·퇴장) — JS가 관리
+         fish-float-layer  : 중앙 대기 부유 모션 (.is-floating 클래스로 제어)
+         fish-img          : 실제 이미지 -->
+    <div class="fish-stage" id="fish-stage">
+      <div class="fish-motion-layer" id="fish-motion-a">
+        <div class="fish-float-layer" id="fish-float-a">
+          <button class="fish-hover-layer" id="fish-hover-a" aria-label="" tabindex="-1">
+            <img class="fish-img" id="fish-a" src="images/hero-goldie-pop.png" alt="">
+          </button>
+        </div>
+      </div>
+      <div class="fish-motion-layer" id="fish-motion-b">
+        <div class="fish-float-layer" id="fish-float-b">
+          <button class="fish-hover-layer" id="fish-hover-b" aria-label="" tabindex="-1">
+            <img class="fish-img" id="fish-b" alt="">
+          </button>
+        </div>
+      </div>
+      <div class="fish-motion-layer" id="fish-motion-c">
+        <div class="fish-float-layer" id="fish-float-c">
+          <button class="fish-hover-layer" id="fish-hover-c" aria-label="" tabindex="-1">
+            <img class="fish-img" id="fish-c" alt="">
+          </button>
+        </div>
+      </div>
+    </div>
+
   </section>
 
   <script src="script.js"></script>
