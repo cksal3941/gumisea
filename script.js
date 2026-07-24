@@ -1,3 +1,28 @@
+// ── 햄버거 메뉴 토글 ──────────────────────────────────────
+const navToggle    = document.getElementById('nav-toggle');
+const mobileNav    = document.getElementById('mobile-nav');
+const mobileClose  = document.getElementById('mobile-nav-close');
+
+function openMobileNav() {
+  mobileNav.classList.add('is-open');
+  mobileNav.removeAttribute('aria-hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileNav() {
+  mobileNav.classList.remove('is-open');
+  mobileNav.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+if (navToggle) navToggle.addEventListener('click', openMobileNav);
+if (mobileClose) mobileClose.addEventListener('click', closeMobileNav);
+if (mobileNav) {
+  mobileNav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', closeMobileNav);
+  });
+}
+
 // ─────────────────────────────────────────────────────────
 //  CAROUSEL_CONFIG
 // ─────────────────────────────────────────────────────────
@@ -40,7 +65,7 @@ const PRODUCTS = [
   {
     id: 'octo-pop', displayName: 'OCTO POP',
     image: 'images/hero-sey-octopus.png', alt: 'OCTO POP 문어 젤리',
-    scale: 1.0, centerX: 0, centerY: 0.02, centerRotation: 0,
+    scale: 1.15, centerX: 0, centerY: 0.02, centerRotation: 0,
     duration: null, easing: null,
     floatX: 5, floatY: -8, floatRotation: 0.7, floatDuration: 3200, floatDelay: 200,
   },
@@ -54,21 +79,21 @@ const PRODUCTS = [
   {
     id: 'tangy-blue', displayName: 'TANGY BLUE',
     image: 'images/hero-tangy-blue.png', alt: 'TANGY BLUE 블루탱 젤리',
-    scale: 0.9, centerX: 0, centerY: 0, centerRotation: -3,
+    scale: 1.1, centerX: 0, centerY: 0, centerRotation: -3,
     duration: null, easing: null,
     floatX: 10, floatY: -10, floatRotation: 1.0, floatDuration: 2600, floatDelay: 200,
   },
   {
     id: 'seahorsey', displayName: 'SEAHORSEY',
     image: 'images/seahorse.png', alt: 'SEAHORSEY 해마 젤리',
-    scale: 0.85, centerX: 0, centerY: -0.04, centerRotation: -5,
+    scale: 1.1, centerX: 0, centerY: -0.04, centerRotation: -5,
     duration: null, easing: null,
     floatX: 7, floatY: -12, floatRotation: 0.5, floatDuration: 3000, floatDelay: 200,
   },
   {
     id: 'tutti-fish', displayName: 'TUTTI FISH',
     image: 'images/tropical-fish.png', alt: 'TUTTI FISH 열대어 젤리',
-    scale: 0.95, centerX: 0, centerY: 0, centerRotation: 2,
+    scale: 1.15, centerX: 0, centerY: 0, centerRotation: 2,
     duration: null, easing: null,
     floatX: 7, floatY: -15, floatRotation: 1.0, floatDuration: 2400, floatDelay: 200,
   },
@@ -162,6 +187,20 @@ function stopFloat(floatEl) {
   floatEl.classList.remove('is-floating');
 }
 
+function startSwimAnimation(floatEl, dur) {
+  if (prefersReducedMotion()) return;
+  floatEl.animate(
+    [
+      { transform: 'translate3d(0, 0, 0) rotate(0deg)' },
+      { transform: 'translate3d(0, -4px, 0) rotate(0.8deg)' },
+      { transform: 'translate3d(0, 0, 0) rotate(0deg)' },
+      { transform: 'translate3d(0, 4px, 0) rotate(-0.8deg)' },
+      { transform: 'translate3d(0, 0, 0) rotate(0deg)' },
+    ],
+    { duration: dur / 2, iterations: 2, easing: 'ease-in-out', fill: 'none' }
+  );
+}
+
 // ─────────────────────────────────────────────────────────
 //  PRELOAD
 // ─────────────────────────────────────────────────────────
@@ -243,14 +282,26 @@ const SLOT_TRANSFORM = {
   OFF_RIGHT: 'translateX(calc(100vw + 600px))         translateY(-50%)',
 };
 
+const SLOT_TRANSFORM_MOBILE = {
+  OFF_LEFT:  'translateY(-150vh)',
+  PREV:      'translateY(16vh)',
+  CURRENT:   'translateY(44vh)',
+  NEXT:      'translateY(72vh)',
+  OFF_RIGHT: 'translateY(150vh)',
+};
+
+function isMobile() { return vw <= CAROUSEL_CONFIG.mobileBreakpoint; }
+
 function setPosition(el, slotKey, animate, dur, ease) {
+  const d = dur  ?? CAROUSEL_CONFIG.defaultDuration;
+  const e = ease ?? CAROUSEL_CONFIG.defaultEasing;
   if (animate) {
-    el.style.transition = `transform ${dur ?? CAROUSEL_CONFIG.defaultDuration}ms ${ease ?? CAROUSEL_CONFIG.defaultEasing}`;
+    el.style.transition = `transform ${d}ms ${e}, color ${d}ms ${e}`;
   } else {
     el.style.transition = 'none';
     void el.offsetWidth;
   }
-  el.style.transform = SLOT_TRANSFORM[slotKey];
+  el.style.transform = isMobile() ? SLOT_TRANSFORM_MOBILE[slotKey] : SLOT_TRANSFORM[slotKey];
 }
 
 // ─────────────────────────────────────────────────────────
@@ -350,8 +401,8 @@ function onFishFocusOut(e) {
 // ─────────────────────────────────────────────────────────
 function activateHoverPointer() {
   activeLayer.hover.style.pointerEvents = 'auto';
-  prevLayer.hover.style.pointerEvents   = 'none';
-  nextLayer.hover.style.pointerEvents   = 'none';
+  prevLayer.hover.style.pointerEvents   = 'auto';
+  nextLayer.hover.style.pointerEvents   = 'auto';
 }
 
 // ─────────────────────────────────────────────────────────
@@ -377,6 +428,7 @@ function renderInitialProducts() {
   // 텍스트 슬롯
   const initText = (el, slotKey, product) => {
     el.textContent = product.displayName;
+    el.dataset.productId = product.id;
     el.classList.toggle('slot-current', slotKey === 'CURRENT');
     setPosition(el, slotKey, false);
   };
@@ -388,14 +440,17 @@ function renderInitialProducts() {
   // 물고기 3레이어 배치
   activeLayer.img.src = current.image;
   activeLayer.img.alt = '';
+  activeLayer.hover.dataset.productId = current.id;
   placeFishInstant(activeLayer, current, getCenterTransform(current), 1, 3);
 
   nextLayer.img.src = next.image;
   nextLayer.img.alt = '';
+  nextLayer.hover.dataset.productId = next.id;
   placeFishInstant(nextLayer, next, getPeekTransform(next, +1), CAROUSEL_CONFIG.peekOpacity, 1);
 
   prevLayer.img.src = prev.image;
   prevLayer.img.alt = '';
+  prevLayer.hover.dataset.productId = prev.id;
   placeFishInstant(prevLayer, prev, getPeekTransform(prev, -1), CAROUSEL_CONFIG.peekOpacity, 1);
 
   // 접근성
@@ -495,6 +550,8 @@ function changeSlide(direction, options = {}) {
   // ── 텍스트 슬롯 ──────────────────────────────────────
   const [a, b, c, d] = slotNodes;
   if (direction > 0) {
+    b.classList.remove('slot-current');
+    c.classList.add('slot-current');
     setPosition(a, 'OFF_LEFT', true, dur, ease);
     setPosition(b, 'PREV',     true, dur, ease);
     setPosition(c, 'CURRENT',  true, dur, ease);
@@ -502,7 +559,10 @@ function changeSlide(direction, options = {}) {
   } else {
     const newPrevIdx = ((newIndex - 1) + n) % n;
     d.textContent = PRODUCTS[newPrevIdx].displayName;
+    d.dataset.productId = PRODUCTS[newPrevIdx].id;
     d.classList.remove('slot-current');
+    b.classList.remove('slot-current');
+    a.classList.add('slot-current');
     setPosition(d, 'OFF_LEFT', false);
     setPosition(d, 'PREV',      true, dur, ease);
     setPosition(a, 'CURRENT',   true, dur, ease);
@@ -515,13 +575,17 @@ function changeSlide(direction, options = {}) {
   const outgoing = activeLayer;
   const incoming = direction > 0 ? nextLayer : prevLayer;
 
-  // 전환 중 모든 hover 비활성
-  [leaving, outgoing, incoming].forEach(l => {
-    l.hover.classList.remove('is-hovered');
-    l.hover.style.pointerEvents = 'none';
-  });
+  // 전환 중 hover 효과만 제거 — leaving만 클릭 차단 (화면 밖으로 나감)
+  [leaving, outgoing, incoming].forEach(l => l.hover.classList.remove('is-hovered'));
+  leaving.hover.style.pointerEvents  = 'none';
+  outgoing.hover.style.pointerEvents = 'auto';
+  incoming.hover.style.pointerEvents = 'auto';
 
   stopFloat(outgoing.float);
+
+  startSwimAnimation(leaving.float,  dur);
+  startSwimAnimation(outgoing.float, dur);
+  startSwimAnimation(incoming.float, dur);
 
   const tx = `transform ${dur}ms ${ease}, opacity ${dur}ms ${ease}`;
 
@@ -550,15 +614,12 @@ function changeSlide(direction, options = {}) {
 
       // 텍스트 슬롯 정리
       if (direction > 0) {
-        b.classList.remove('slot-current');
-        c.classList.add('slot-current');
         a.textContent = PRODUCTS[(currentIndex + 2) % n].displayName;
+        a.dataset.productId = PRODUCTS[(currentIndex + 2) % n].id;
         a.classList.remove('slot-current');
         setPosition(a, 'OFF_RIGHT', false);
         slotNodes = [b, c, d, a];
       } else {
-        b.classList.remove('slot-current');
-        a.classList.add('slot-current');
         slotNodes = [d, a, b, c];
       }
 
@@ -579,6 +640,7 @@ function changeSlide(direction, options = {}) {
         : (currentIndex - 1 + n) % n;
       leaving.img.src = PRODUCTS[recycleIdx].image;
       leaving.img.alt = '';
+      leaving.hover.dataset.productId = PRODUCTS[recycleIdx].id;
       leaving.motion.style.transition = 'none';
       leaving.motion.style.transform  = getPeekTransform(PRODUCTS[recycleIdx], recycleSide);
       leaving.motion.style.opacity    = String(CAROUSEL_CONFIG.peekOpacity);
@@ -656,8 +718,19 @@ function syncConfigToCSSVars() {
   el.addEventListener('focusin',    onFishFocusIn);
   el.addEventListener('focusout',   onFishFocusOut);
   el.addEventListener('click', (e) => {
-    if (e.currentTarget !== activeLayer.hover) return;
-    console.log(`[Gumi Sea] 상품 선택: ${PRODUCTS[currentIndex].displayName}`);
+    const productId = e.currentTarget.dataset.productId;
+    if (!productId) return;
+    console.log(`[Gumi Sea] 상품 선택: ${productId}`);
+    openProductPage(productId);
+  });
+});
+
+// 텍스트 클릭 → 상품 페이지
+textNodes.forEach(el => {
+  el.addEventListener('click', () => {
+    const productId = el.dataset.productId;
+    if (!productId) return;
+    openProductPage(productId);
   });
 });
 
@@ -679,6 +752,119 @@ heroEl.addEventListener('keydown', (e) => {
 
 document.addEventListener('visibilitychange', handleVisibilityChange);
 window.addEventListener('pagehide', () => { stopAutoplay(); stopResumeTimer(); });
+
+// ─────────────────────────────────────────────────────────
+//  상품 페이지 전환
+// ─────────────────────────────────────────────────────────
+const PRODUCT_PAGE_MAP = {
+  'goldie-pop':  'goldie-page',
+  'octo-pop':    'octo-page',
+  'tangy-blue':  'tangyblue-page',
+  'seahorsey':   'seahorsey-page',
+  'tutti-fish':  'tuttifish-page',
+};
+
+function openProductPage(productId) {
+  const pageId = PRODUCT_PAGE_MAP[productId];
+  if (!pageId) return;
+  const page = document.getElementById(pageId);
+  if (!page) return;
+
+  stopAutoplay();
+  document.body.style.overflow = 'hidden';
+
+  // 페이지 페이드인
+  page.classList.add('is-visible');
+  page.removeAttribute('aria-hidden');
+
+  // 짧은 딜레이 후 원 확장 시작
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      page.classList.add('is-expanded');
+    });
+  });
+}
+
+function closeProductPage(pageId) {
+  const page = document.getElementById(pageId);
+  if (!page) return;
+
+  // 페이지 페이드아웃
+  page.classList.remove('is-visible');
+
+  // 페이지가 가려진 후 원과 클래스 초기화 (애니메이션 없이)
+  setTimeout(() => {
+    const circle = page.querySelector('.gp-bg-circle');
+    if (circle) circle.style.transition = 'none';
+    page.classList.remove('is-expanded');
+    void page.offsetWidth;
+    if (circle) circle.style.transition = '';
+    page.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (CAROUSEL_CONFIG.autoplayEnabled) startAutoplay();
+  }, 300);
+}
+
+document.getElementById('goldie-back').addEventListener('click',     () => closeProductPage('goldie-page'));
+document.getElementById('octo-back').addEventListener('click',       () => closeProductPage('octo-page'));
+document.getElementById('tangyblue-back').addEventListener('click',  () => closeProductPage('tangyblue-page'));
+document.getElementById('seahorsey-back').addEventListener('click',  () => closeProductPage('seahorsey-page'));
+document.getElementById('tuttifish-back').addEventListener('click',  () => closeProductPage('tuttifish-page'));
+
+// ─────────────────────────────────────────────────────────
+//  FUN #1 : 물고기 젤리 흔들림 (anime.js)
+// ─────────────────────────────────────────────────────────
+function wobbleGpFish(fish) {
+  fish.style.animation = 'none';
+  anime({
+    targets: fish,
+    keyframes: [
+      { scaleX: 1.20, scaleY: 0.82, rotate: '-5deg' },
+      { scaleX: 0.86, scaleY: 1.16, rotate:  '6deg' },
+      { scaleX: 1.12, scaleY: 0.90, rotate: '-4deg' },
+      { scaleX: 0.93, scaleY: 1.08, rotate:  '3deg' },
+      { scaleX: 1.05, scaleY: 0.96, rotate: '-1deg' },
+      { scaleX: 1.00, scaleY: 1.00, rotate:  '0deg' },
+    ],
+    duration: 680,
+    easing: 'easeInOutSine',
+    complete() { fish.style.animation = ''; },
+  });
+}
+
+document.querySelectorAll('.gp-fish').forEach(fish => {
+  fish.addEventListener('click', () => wobbleGpFish(fish));
+});
+
+
+// ─────────────────────────────────────────────────────────
+//  상품 카드 클릭 → 상품 페이지
+// ─────────────────────────────────────────────────────────
+document.querySelectorAll('.product-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const productId = card.dataset.productId;
+    if (productId) openProductPage(productId);
+  });
+});
+
+// ─────────────────────────────────────────────────────────
+//  무한 자동 슬라이더 — 카드 클로닝
+// ─────────────────────────────────────────────────────────
+(function initInfiniteSlider() {
+  const track = document.querySelector('.cards-track');
+  if (!track) return;
+
+  const originals = [...track.querySelectorAll('.product-card')];
+  originals.forEach(card => {
+    const clone = card.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    clone.addEventListener('click', () => {
+      const productId = clone.dataset.productId;
+      if (productId) openProductPage(productId);
+    });
+    track.appendChild(clone);
+  });
+})();
 
 // ─────────────────────────────────────────────────────────
 //  전역 노출 (콘솔 테스트)
