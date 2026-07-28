@@ -1,10 +1,18 @@
-# Gumi Sea 🌊
+<div align="center">
 
-> 바다 물고기를 모티브로 한 가상의 유기농 구미 젤리 브랜드 랜딩 페이지
+# 🌊 Gumi Sea
 
-**Live** → [gumisea.vercel.app](https://gumisea.vercel.app)  
-**GitHub** → [github.com/cksal3941/gumisea](https://github.com/cksal3941/gumisea)  
-**Design** → [Figma](https://www.figma.com/design/A30eIW3rdki0A2bae7D4Nl/%EA%B5%AC%EB%AF%B8%EC%94%A8-%EB%A0%8C%EB%94%A9%ED%8E%98%EC%9D%B4%EC%A7%80?node-id=0-1&t=hGNAqqpy65ut0i4d-1)
+**바다 물고기를 모티브로 한 가상의 유기농 구미 젤리 브랜드 랜딩 페이지**
+
+[![Vercel](https://img.shields.io/badge/LIVE-gumisea.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://gumisea.vercel.app)
+[![GitHub](https://img.shields.io/badge/GitHub-cksal3941%2Fgumisea-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/cksal3941/gumisea)
+[![Figma](https://img.shields.io/badge/Design-Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/design/A30eIW3rdki0A2bae7D4Nl/%EA%B5%AC%EB%AF%B8%EC%94%A8-%EB%A0%8C%EB%94%A9%ED%8E%98%EC%9D%B4%EC%A7%80?node-id=0-1&t=hGNAqqpy65ut0i4d-1)
+
+![GitHub last commit](https://img.shields.io/github/last-commit/cksal3941/gumisea?style=flat-square&color=FF6B6B)
+![GitHub repo size](https://img.shields.io/github/repo-size/cksal3941/gumisea?style=flat-square&color=4ECDC4)
+![GitHub stars](https://img.shields.io/github/stars/cksal3941/gumisea?style=flat-square&color=FFE66D)
+
+</div>
 
 ---
 
@@ -15,21 +23,11 @@ Gumi Sea는 바닷속 물고기 캐릭터에서 영감을 받은 **가상의 구
 
 | 캐릭터 | 제품명 | 맛 |
 |---|---|---|
-| 금붕어 | GOLDIE POP | Organic Tangerine |
-| 블루탱 | TANGY BLUE | Organic Blueberry |
-| 문어 | OCTO POP | Organic Strawberry |
-| 해마 | SEAHORSEY | Organic Green Grape |
-| 열대어 | TUTTI FISH | Organic Mixed Fruit |
-
----
-
-## Asset Credits
-
-| 에셋 | 제작 도구 |
-|---|---|
-| 물고기·캐릭터 이미지 | [ChatGPT](https://chat.openai.com) (DALL·E 이미지 생성) |
-| 히어로 배경 영상 | [Google Flow](https://labs.google/flow) (AI 영상 생성) |
-| UI 디자인 시안 | [Figma](https://www.figma.com) |
+| 🐠 금붕어 | GOLDIE POP | Organic Tangerine |
+| 🐟 블루탱 | TANGY BLUE | Organic Blueberry |
+| 🐙 문어 | OCTO POP | Organic Strawberry |
+| 🐴 해마 | SEAHORSEY | Organic Green Grape |
+| 🐡 열대어 | TUTTI FISH | Organic Mixed Fruit |
 
 ---
 
@@ -47,23 +45,22 @@ Gumi Sea는 바닷속 물고기 캐릭터에서 영감을 받은 **가상의 구
 
 ## Features
 
-### Desktop
-- **Hero 영상 배경** — MP4 자동재생(음소거·반복), 이미지 폴백 없음
+### 🖥️ Desktop
+- **Hero 영상 배경** — MP4 자동재생(음소거·반복)
 - **3-레이어 물고기 캐러셀** — 좌우 peek 노출 + 키보드/클릭 탐색 + 자동 슬라이드
-- **물고기 hover 효과** — scale · brightness 전환, 텍스트 미세 이동
+- **물고기 hover 효과** — scale · brightness 전환
 - **상품 상세 페이지** — 원형 배경 expand 애니메이션, 5개 상품 개별 페이지
 
-### Mobile (≤ 768px)
+### 📱 Mobile (≤ 768px)
 - **풀스크린 원형 호 메뉴** — 물고기 이미지가 원호 위를 따라 배치
-- **무한 슬라이드** — 4개 항목(SHOP · OUR STORY · JOURNAL · CONTACT) 순환
-- **자동 회전** — 3초 간격, 드래그 중 일시 정지
+- **무한 슬라이드** — 4개 항목 순환, 3초 자동 회전
 - **터치 + 마우스 드래그** — 스냅·탄성 지원
-- **스크롤 그라데이션 헤더** — 10px 스크롤 시 흰색 그라데이션 등장
+- **스크롤 그라데이션 헤더** — 스크롤 시 흰색 그라데이션 등장
 
-### 공통
-- **반응형** — `clamp()` 기반 유동 폰트·패딩, 768px 브레이크포인트
-- **섹션 앵커 이동** — 헤더/모바일 메뉴 클릭 시 smooth scroll
-- **접근성** — `aria-label`, `aria-hidden`, `aria-live`, `focus-visible`, `prefers-reduced-motion`
+### ✨ 공통
+- **반응형** — `clamp()` 기반 유동 폰트·패딩
+- **섹션 앵커 이동** — smooth scroll
+- **접근성** — aria-label, focus-visible, prefers-reduced-motion
 
 ---
 
@@ -91,15 +88,16 @@ gumisea/
 별도 빌드 없이 정적 파일로 동작합니다.
 
 ```bash
-# 로컬 미리보기 (VS Code Live Server 또는 아래 방법)
 npx serve .
+# → http://localhost:3000
 ```
-
-브라우저에서 `http://localhost:3000` 접속
 
 ---
 
-## Design Reference
+## Asset Credits
 
-피그마 시안을 기반으로 제작되었습니다.  
-→ [Figma 디자인 파일 열기](https://www.figma.com/design/A30eIW3rdki0A2bae7D4Nl/%EA%B5%AC%EB%AF%B8%EC%94%A8-%EB%A0%8C%EB%94%A9%ED%8E%98%EC%9D%B4%EC%A7%80?node-id=0-1&t=hGNAqqpy65ut0i4d-1)
+| 에셋 | 제작 도구 |
+|---|---|
+| 물고기·캐릭터 이미지 | ![ChatGPT](https://img.shields.io/badge/ChatGPT-74AA9C?style=flat-square&logo=openai&logoColor=white) DALL·E 이미지 생성 |
+| 히어로 배경 영상 | ![Google](https://img.shields.io/badge/Google_Flow-4285F4?style=flat-square&logo=google&logoColor=white) AI 영상 생성 |
+| UI 디자인 시안 | ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=flat-square&logo=figma&logoColor=white) 디자인 시안 |
