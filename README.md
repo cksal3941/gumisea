@@ -12,8 +12,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/cksal3941/gumisea?style=flat-square&color=4ECDC4)
 ![GitHub stars](https://img.shields.io/github/stars/cksal3941/gumisea?style=flat-square&color=FFE66D)
 
-![Duration](https://img.shields.io/badge/기간-2026.07.23%20~%2007.29-A29BFE?style=flat-square)
-![Hours](https://img.shields.io/badge/총%20작업시간-약%20133시간-FD79A8?style=flat-square)
+![Duration](https://img.shields.io/badge/기간-2026.07.23%20~%2007.25%20(3일)-A29BFE?style=flat-square)
 
 </div>
 
