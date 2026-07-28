@@ -1,9 +1,34 @@
 # Gumi Sea 🌊
 
-> 바다 속 구미 젤리 브랜드 랜딩 페이지
+> 바다 물고기를 모티브로 한 가상의 유기농 구미 젤리 브랜드 랜딩 페이지
 
 **Live** → [gumisea.vercel.app](https://gumisea.vercel.app)  
 **Design** → [Figma](https://www.figma.com/design/A30eIW3rdki0A2bae7D4Nl/%EA%B5%AC%EB%AF%B8%EC%94%A8-%EB%A0%8C%EB%94%A9%ED%8E%98%EC%9D%B4%EC%A7%80?node-id=0-1&t=hGNAqqpy65ut0i4d-1)
+
+---
+
+## About
+
+Gumi Sea는 바닷속 물고기 캐릭터에서 영감을 받은 **가상의 구미 젤리 브랜드**입니다.  
+금붕어, 문어, 블루탱, 해마, 열대어 등 5종의 물고기 캐릭터가 각각 고유한 유기농 과일 맛을 대표합니다.
+
+| 캐릭터 | 제품명 | 맛 |
+|---|---|---|
+| 금붕어 | GOLDIE POP | Organic Tangerine |
+| 블루탱 | TANGY BLUE | Organic Blueberry |
+| 문어 | OCTO POP | Organic Strawberry |
+| 해마 | SEAHORSEY | Organic Green Grape |
+| 열대어 | TUTTI FISH | Organic Mixed Fruit |
+
+---
+
+## Asset Credits
+
+| 에셋 | 제작 도구 |
+|---|---|
+| 물고기·캐릭터 이미지 | [ChatGPT](https://chat.openai.com) (DALL·E 이미지 생성) |
+| 히어로 배경 영상 | [Google Flow](https://labs.google/flow) (AI 영상 생성) |
+| UI 디자인 시안 | [Figma](https://www.figma.com) |
 
 ---
 
