@@ -21,12 +21,18 @@
     <div class="header-inner">
       <a href="#" class="logo">Gumi Sea</a>
       <nav class="main-nav" id="main-nav">
-        <a href="#">SHOP</a>
-        <a href="#">OUR STORY</a>
-        <a href="#">JOURNAL</a>
-        <a href="#">CONTACT</a>
+        <a href="#shop">SHOP</a>
+        <a href="#our-story">OUR STORY</a>
+        <a href="#journal">JOURNAL</a>
+        <a href="#contact">CONTACT</a>
       </nav>
-      <button class="nav-toggle" id="nav-toggle" aria-label="메뉴 열기">&#9776;</button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="메뉴 열기">
+        <svg width="24" height="18" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="2"  x2="24" y2="2"  stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="0" y1="9"  x2="24" y2="9"  stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="0" y1="16" x2="24" y2="16" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </button>
     </div>
   </header>
 
@@ -34,21 +40,30 @@
   <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
     <div class="mobile-nav-header">
       <a href="#" class="mobile-nav-logo">Gumi Sea</a>
-      <button class="mobile-nav-close" id="mobile-nav-close" aria-label="메뉴 닫기">&#10005;</button>
+      <button class="mobile-nav-close" id="mobile-nav-close" aria-label="메뉴 닫기">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="1" y1="1"  x2="19" y2="19" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="19" y1="1" x2="1"  y2="19" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </button>
     </div>
     <div class="mnav-circle" aria-hidden="true"></div>
     <nav class="mobile-nav-links">
-      <a href="#" class="mnav-item mnav-contact">
-        <img class="mnav-fish" src="images/hero-sey-octopus.png" alt="">
-        <span>CONTACT</span>
-      </a>
-      <a href="#" class="mnav-item mnav-shop">
+      <a href="#shop" class="mnav-item mnav-shop">
         <img class="mnav-fish" src="images/hero-goldie-pop.png" alt="">
         <span>SHOP</span>
       </a>
-      <a href="#" class="mnav-item mnav-story">
+      <a href="#our-story" class="mnav-item mnav-story">
         <img class="mnav-fish" src="images/hero-tangy-blue.png" alt="">
         <span>OUR STORY</span>
+      </a>
+      <a href="#journal" class="mnav-item mnav-journal">
+        <img class="mnav-fish" src="images/tropical-fish.png" alt="">
+        <span>JOURNAL</span>
+      </a>
+      <a href="#contact" class="mnav-item mnav-contact">
+        <img class="mnav-fish" src="images/hero-sey-octopus.png" alt="">
+        <span>CONTACT</span>
       </a>
     </nav>
     <p class="mobile-nav-copy">©2026 Gumi Sea. All right reserved.</p>
@@ -56,6 +71,9 @@
 
   <!-- Layer 1: Hero (pool background) -->
   <section class="hero" tabindex="0" role="region" aria-label="상품 캐러셀">
+    <video class="hero-video" autoplay muted loop playsinline aria-hidden="true">
+      <source src="images/hero-pool-background.mp4" type="video/mp4">
+    </video>
 
     <!-- Layer 2: 텍스트 캐러셀 노드 4개 — 내용·위치는 JavaScript가 관리 -->
     <span class="product-name" id="text-0"></span>
@@ -95,7 +113,7 @@
   </section>
 
   <!-- 상품 목록 섹션 -->
-  <section class="products-section" style="position:relative">
+  <section class="products-section" id="shop" style="position:relative">
     <div class="products-left">
       <img class="products-title-star" src="images/star.png" alt="">
       <h2 class="products-title">FIND YOUR<br>PERFECT POP</h2>
@@ -145,8 +163,8 @@
   </section>
 
   <!-- Handmade With Love 섹션 -->
-  <section class="handmade-section">
-    <h2 class="handmade-title">HANDMADE WITH LOVE</h2>
+  <section class="handmade-section" id="our-story">
+    <h2 class="handmade-title">HANDMADE<br class="mobile-br"> WITH LOVE</h2>
     <p class="handmade-subtitle">Carefully crafted, one gummy at a time.</p>
     <div class="handmade-features">
       <div class="feature-item">
@@ -174,7 +192,7 @@
   </section>
 
   <!-- Dive Into Our World 섹션 -->
-  <section class="dive-section">
+  <section class="dive-section" id="journal">
     <div class="dive-left">
       <h2 class="dive-title">DIVE INTO<br>OUR WORLD</h2>
       <p class="dive-desc">Discover more stories, flavors, and underwater adventures on Instagram.</p>
@@ -189,7 +207,7 @@
   </section>
 
   <!-- Footer -->
-  <footer class="site-footer">
+  <footer class="site-footer" id="contact">
     <div class="footer-newsletter-wrap">
       <img class="newsletter-octo" src="images/hero-sey-octopus.png" alt="">
       <div class="newsletter-pill">

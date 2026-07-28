@@ -14,15 +14,36 @@ function closeMobileNav() {
   mobileNav.classList.remove('is-open');
   mobileNav.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
+  mnavAutoStop();
 }
 
-if (navToggle) navToggle.addEventListener('click', openMobileNav);
-if (mobileClose) mobileClose.addEventListener('click', closeMobileNav);
+function triggerClickAnim(el, fn) {
+  el.classList.add('clicked');
+  setTimeout(() => { el.classList.remove('clicked'); fn(); }, 300);
+}
+
+if (navToggle)   navToggle.addEventListener('click',   () => triggerClickAnim(navToggle,   openMobileNav));
+if (mobileClose) mobileClose.addEventListener('click', () => triggerClickAnim(mobileClose, closeMobileNav));
 if (mobileNav) {
-  mobileNav.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', closeMobileNav);
+  mobileNav.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      closeMobileNav();
+      if (target) {
+        e.preventDefault();
+        setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 380);
+      }
+    });
   });
 }
+
+// 데스크탑 헤더 smooth scroll
+document.querySelectorAll('.main-nav a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
 
 // ─────────────────────────────────────────────────────────
 //  CAROUSEL_CONFIG
@@ -310,13 +331,15 @@ function setPosition(el, slotKey, animate, dur, ease) {
 // ─────────────────────────────────────────────────────────
 function applyHoverVisuals() {
   if (isAnimating) return;
+  if (!window.matchMedia('(hover: hover)').matches) return;
   activeLayer.hover.classList.add('is-hovered');
+  if (window.innerWidth <= 768) return;
   const curText = slotNodes[1];
   const d = CAROUSEL_CONFIG.hoverDuration;
   const e = 'cubic-bezier(0.25, 0.1, 0.25, 1)';
   curText.style.transition = `top ${d}ms ${e}, letter-spacing ${d}ms ${e}`;
   void curText.offsetWidth;
-  curText.style.top           = `calc(52% + ${CAROUSEL_CONFIG.hoverTextOffset}px)`;
+  curText.style.top           = `calc(52vh + ${CAROUSEL_CONFIG.hoverTextOffset}px)`;
   curText.style.letterSpacing = CAROUSEL_CONFIG.hoverLetterSpacing;
 }
 
@@ -879,35 +902,40 @@ window.stopAutoplay  = stopAutoplay;
 // ─────────────────────────────────────────────────────────
 //  MOBILE NAV WHEEL — 원호(arc) 인터랙티브 휠
 //
-//  원 파라미터:
-//    R  = 380px  (반지름)
-//    CX = 320px  (원 중심까지의 왼쪽 거리, 화면 바깥)
-//    중심 x = -320px, active item text at x = -320+380 = 60px
-//    ±STEP°: x = -320+380·cos(STEP°)≈37px, y = ±380·sin(STEP°)≈±130px
+//  좌표 공식 (아이템·원선 동일):
+//    itemAngle = offset + baseAngles[i]
+//    x = CX + R·cos(itemAngle)   ← 화면 왼쪽 기준 px
+//    y = R·sin(itemAngle)        ← 세로 중심선 기준 px
+//
+//  조정 가능한 값은 MNAV 객체 한 곳에 집중.
 // ─────────────────────────────────────────────────────────
 const MNAV = {
-  R:       380,   // 원 반지름 (px)
-  CX:      200,   // 원 중심 = 화면 왼쪽으로 CX px 밖
-  STEP:     20,   // 항목 간 각도 (deg)
-  FONT_A:   48,   // 활성 fontSize (px)
-  FONT_I:   22,   // 비활성 fontSize (px)
-  FISH_A:   76,   // 활성 물고기 높이 (px)
-  FISH_I:   44,   // 비활성 물고기 높이 (px)
-  FISH_LA: -84,   // 활성 물고기 left (px)
-  FISH_LI: -50,   // 비활성 물고기 left (px)
-  OPA_A:   1.00,  // 활성 opacity
-  OPA_I:   0.65,  // 비활성 opacity
-  DUR:      380,  // 스냅 애니메이션 (ms)
-  DRAG_MIN:   8,  // 드래그 판정 최소 px
+  // ── 위치 계산 파라미터 (이 세 값만 조정) ──────────────
+  R_RATIO:   0.45,  // 반지름 = vw * R_RATIO
+  STEP:      40,    // 항목 간 각도 (deg)
+  CX_OFFSET: 15,   // 원·아이템 전체 x 이동 (px)
+  // ─────────────────────────────────────────────────────
+  FONT_A:    40,    // 활성 fontSize (px)
+  FONT_I:    22,    // 비활성 fontSize (px)
+  FISH_A:    120,   // 활성 물고기 height (px)
+  FISH_I:    55,    // 비활성 물고기 height (px)
+  GAP_A:     14,    // 활성 아이템 gap (px)
+  GAP_I:     8,     // 비활성 아이템 gap (px)
+  OPA_A:     1.00,  // 활성 opacity
+  OPA_I:     0.65,  // 비활성 opacity
+  DUR:       380,   // 스냅 애니메이션 (ms)
+  DRAG_MIN:  8,     // 드래그 판정 최소 px
 };
 
-// CONTACT=-20°, SHOP=0°(center), OUR STORY=+20°
+// CONTACT=-20°, SHOP=0°(활성·오른쪽), OUR STORY=+20°
+const mnavCircleEl = document.querySelector('.mnav-circle');
 const mnavEls = [
-  document.querySelector('.mnav-contact'),
   document.querySelector('.mnav-shop'),
   document.querySelector('.mnav-story'),
+  document.querySelector('.mnav-journal'),
+  document.querySelector('.mnav-contact'),
 ];
-const mnavBaseAngles = [-MNAV.STEP, 0, MNAV.STEP];
+const mnavBaseAngles = [0, MNAV.STEP, 2 * MNAV.STEP, -MNAV.STEP];
 
 let mnavOffset   = 0;
 let mnavDragY0   = null;
@@ -915,34 +943,59 @@ let mnavOffset0  = 0;
 let mnavDragging = false;
 let mnavSnapRAF  = null;
 
-function mnavPos(deg) {
-  const r = deg * Math.PI / 180;
-  return { x: -MNAV.CX + MNAV.R * Math.cos(r), y: MNAV.R * Math.sin(r) };
+function mnavGetR()  { return vw * MNAV.R_RATIO; }
+// 활성 물고기 중심(angle=0) = vw*0.20 → 원 중심 CX = vw*0.20 - R (화면 왼쪽 바깥)
+function mnavGetCX() { return vw * 0.20 - mnavGetR() + MNAV.CX_OFFSET; }
+
+// 원선 div를 아이템과 동일한 CX·R로 갱신
+function mnavUpdateCircle() {
+  if (!mnavCircleEl) return;
+  const R  = mnavGetR();
+  const CX = mnavGetCX();
+  const d  = R * 2;
+  mnavCircleEl.style.width  = `${d}px`;
+  mnavCircleEl.style.height = `${d}px`;
+  mnavCircleEl.style.left   = `${CX - R}px`;
+  mnavCircleEl.style.top    = `calc(50% - ${R}px)`;
 }
 
 function mnavApply(offset) {
+  const R  = mnavGetR();
+  const CX = mnavGetCX();
+  const period = mnavEls.length * MNAV.STEP;
   mnavEls.forEach((el, i) => {
     if (!el) return;
-    const angle = mnavBaseAngles[i] + offset;
-    const { x, y } = mnavPos(angle);
-    const dist = Math.min(Math.abs(angle) / MNAV.STEP, 1);
+    const raw = mnavBaseAngles[i] + offset;
+    let angleDeg = ((raw % period) + period) % period;
+    if (angleDeg > period / 2) angleDeg -= period;
+    const angleRad = angleDeg * Math.PI / 180;
 
-    const opacity  = MNAV.OPA_A  - dist * (MNAV.OPA_A  - MNAV.OPA_I);
-    const fontSize = MNAV.FONT_A - dist * (MNAV.FONT_A - MNAV.FONT_I);
-    const fishH    = MNAV.FISH_A - dist * (MNAV.FISH_A - MNAV.FISH_I);
-    const fishL    = MNAV.FISH_LA - dist * (MNAV.FISH_LA - MNAV.FISH_LI);
+    const progress = Math.max(0, 1 - Math.abs(angleDeg) / MNAV.STEP);
+    const opacity  = MNAV.OPA_I  + progress * (MNAV.OPA_A  - MNAV.OPA_I);
+    const fontSize = MNAV.FONT_I + progress * (MNAV.FONT_A - MNAV.FONT_I);
+    const fishH    = MNAV.FISH_I + progress * (MNAV.FISH_A - MNAV.FISH_I);
+    const gap      = MNAV.GAP_I  + progress * (MNAV.GAP_A  - MNAV.GAP_I);
+
+    // 이미지 고유 비율(naturalWidth/naturalHeight)로 반폭을 구해 물고기 중심을 원호에 정렬
+    const fish = el.querySelector('.mnav-fish');
+    const nw = fish?.naturalWidth  || 1;
+    const nh = fish?.naturalHeight || 1;
+    const fishHW = fishH * (nw / nh) * 0.5;
+
+    const x = CX + R * Math.cos(angleRad) - fishHW;
+    const y = R * Math.sin(angleRad);
 
     el.style.transform = `translateX(${x.toFixed(1)}px) translateY(calc(-50% + ${y.toFixed(1)}px))`;
-    el.style.opacity   = opacity.toFixed(3);
+    el.style.opacity   = '1';
+    if (fish) fish.style.opacity = '1';
+    const label = el.querySelector('span');
+    if (label) label.style.opacity = opacity.toFixed(3);
+    el.style.gap       = `${gap.toFixed(1)}px`;
 
     const span = el.querySelector('span');
-    if (span) span.style.fontSize = `${Math.round(fontSize)}px`;
+    if (span) span.style.fontSize = `${fontSize.toFixed(1)}px`;
 
-    const fish = el.querySelector('.mnav-fish');
-    if (fish) {
-      fish.style.height = `${Math.round(fishH)}px`;
-      fish.style.left   = `${Math.round(fishL)}px`;
-    }
+    if (fish) fish.style.height = `${fishH.toFixed(1)}px`;
   });
 }
 
@@ -965,19 +1018,36 @@ function mnavElastic(v, lo, hi) {
   return v;
 }
 
+let mnavAutoTimer = null;
+
+function mnavAutoStart() {
+  mnavAutoStop();
+  mnavAutoTimer = setInterval(() => {
+    const next = mnavOffset - MNAV.STEP;
+    mnavSnapTo(mnavOffset, next);
+  }, 3000);
+}
+
+function mnavAutoStop() {
+  if (mnavAutoTimer) { clearInterval(mnavAutoTimer); mnavAutoTimer = null; }
+}
+
 function mnavReset() {
   if (mnavSnapRAF) { cancelAnimationFrame(mnavSnapRAF); mnavSnapRAF = null; }
   mnavOffset   = 0;
   mnavDragging = false;
   mnavDragY0   = null;
+  mnavUpdateCircle();
   mnavApply(0);
+  mnavAutoStart();
 }
 
 if (mobileNav) {
   mobileNav.addEventListener('touchstart', e => {
     if (mnavSnapRAF) { cancelAnimationFrame(mnavSnapRAF); mnavSnapRAF = null; }
-    mnavDragY0  = e.touches[0].clientY;
-    mnavOffset0 = mnavOffset;
+    mnavAutoStop();
+    mnavDragY0   = e.touches[0].clientY;
+    mnavOffset0  = mnavOffset;
     mnavDragging = false;
   }, { passive: true });
 
@@ -987,9 +1057,9 @@ if (mobileNav) {
     if (!mnavDragging && Math.abs(dy) > MNAV.DRAG_MIN) mnavDragging = true;
     if (!mnavDragging) return;
     e.preventDefault();
-    const degPerPx = 180 / (Math.PI * MNAV.R);  // ≈ 0.15 deg/px
+    const degPerPx = 180 / (Math.PI * mnavGetR());  // R에 비례한 감도
     const raw = mnavOffset0 + dy * degPerPx;
-    mnavOffset = mnavElastic(raw, -MNAV.STEP, MNAV.STEP);
+    mnavOffset = raw;
     mnavApply(mnavOffset);
   }, { passive: false });
 
@@ -998,13 +1068,65 @@ if (mobileNav) {
     if (!mnavDragging) return;
     mnavDragging = false;
     const snap   = Math.round(mnavOffset / MNAV.STEP) * MNAV.STEP;
-    const target = Math.max(-MNAV.STEP, Math.min(MNAV.STEP, snap));
-    mnavSnapTo(mnavOffset, target);
+    mnavSnapTo(mnavOffset, snap);
+    mnavAutoStart();
   }, { passive: true });
+
+  mobileNav.addEventListener('mousedown', e => {
+    if (mnavSnapRAF) { cancelAnimationFrame(mnavSnapRAF); mnavSnapRAF = null; }
+    mnavAutoStop();
+    mnavDragY0   = e.clientY;
+    mnavOffset0  = mnavOffset;
+    mnavDragging = false;
+    e.preventDefault();
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (mnavDragY0 === null) return;
+    const dy = e.clientY - mnavDragY0;
+    if (!mnavDragging && Math.abs(dy) > MNAV.DRAG_MIN) mnavDragging = true;
+    if (!mnavDragging) return;
+    const degPerPx = 180 / (Math.PI * mnavGetR());
+    const raw = mnavOffset0 + dy * degPerPx;
+    mnavOffset = raw;
+    mnavApply(mnavOffset);
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (mnavDragY0 === null) return;
+    mnavDragY0 = null;
+    if (!mnavDragging) return;
+    mnavDragging = false;
+    const snap = Math.round(mnavOffset / MNAV.STEP) * MNAV.STEP;
+    mnavSnapTo(mnavOffset, snap);
+    mnavAutoStart();
+  });
 }
 
+// 화면 크기 변경 시 원선·아이템 좌표 재계산 (vw/vh는 앞선 리스너에서 먼저 갱신됨)
+window.addEventListener('resize', () => {
+  mnavUpdateCircle();
+  mnavApply(mnavOffset);
+});
+
 // 초기 배치 적용
+mnavUpdateCircle();
 mnavApply(0);
+
+// 히어로 영상 재생 속도
+const heroVideo = document.querySelector('.hero-video');
+if (heroVideo) heroVideo.playbackRate = 1.0;
+
+// 모바일 헤더 스크롤 그라데이션
+(function () {
+  const header = document.querySelector('.site-header');
+  if (!header) return;
+  const onScroll = () => {
+    header.classList.toggle('scrolled', window.scrollY > 10);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
 
 // ─────────────────────────────────────────────────────────
 //  INIT
