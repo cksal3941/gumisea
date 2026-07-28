@@ -7,6 +7,7 @@ function openMobileNav() {
   mobileNav.classList.add('is-open');
   mobileNav.removeAttribute('aria-hidden');
   document.body.style.overflow = 'hidden';
+  mnavReset();
 }
 
 function closeMobileNav() {
@@ -874,6 +875,136 @@ window.previousSlide = previousSlide;
 window.changeSlide   = changeSlide;
 window.startAutoplay = startAutoplay;
 window.stopAutoplay  = stopAutoplay;
+
+// ─────────────────────────────────────────────────────────
+//  MOBILE NAV WHEEL — 원호(arc) 인터랙티브 휠
+//
+//  원 파라미터:
+//    R  = 380px  (반지름)
+//    CX = 320px  (원 중심까지의 왼쪽 거리, 화면 바깥)
+//    중심 x = -320px, active item text at x = -320+380 = 60px
+//    ±STEP°: x = -320+380·cos(STEP°)≈37px, y = ±380·sin(STEP°)≈±130px
+// ─────────────────────────────────────────────────────────
+const MNAV = {
+  R:       380,   // 원 반지름 (px)
+  CX:      200,   // 원 중심 = 화면 왼쪽으로 CX px 밖
+  STEP:     20,   // 항목 간 각도 (deg)
+  FONT_A:   48,   // 활성 fontSize (px)
+  FONT_I:   22,   // 비활성 fontSize (px)
+  FISH_A:   76,   // 활성 물고기 높이 (px)
+  FISH_I:   44,   // 비활성 물고기 높이 (px)
+  FISH_LA: -84,   // 활성 물고기 left (px)
+  FISH_LI: -50,   // 비활성 물고기 left (px)
+  OPA_A:   1.00,  // 활성 opacity
+  OPA_I:   0.65,  // 비활성 opacity
+  DUR:      380,  // 스냅 애니메이션 (ms)
+  DRAG_MIN:   8,  // 드래그 판정 최소 px
+};
+
+// CONTACT=-20°, SHOP=0°(center), OUR STORY=+20°
+const mnavEls = [
+  document.querySelector('.mnav-contact'),
+  document.querySelector('.mnav-shop'),
+  document.querySelector('.mnav-story'),
+];
+const mnavBaseAngles = [-MNAV.STEP, 0, MNAV.STEP];
+
+let mnavOffset   = 0;
+let mnavDragY0   = null;
+let mnavOffset0  = 0;
+let mnavDragging = false;
+let mnavSnapRAF  = null;
+
+function mnavPos(deg) {
+  const r = deg * Math.PI / 180;
+  return { x: -MNAV.CX + MNAV.R * Math.cos(r), y: MNAV.R * Math.sin(r) };
+}
+
+function mnavApply(offset) {
+  mnavEls.forEach((el, i) => {
+    if (!el) return;
+    const angle = mnavBaseAngles[i] + offset;
+    const { x, y } = mnavPos(angle);
+    const dist = Math.min(Math.abs(angle) / MNAV.STEP, 1);
+
+    const opacity  = MNAV.OPA_A  - dist * (MNAV.OPA_A  - MNAV.OPA_I);
+    const fontSize = MNAV.FONT_A - dist * (MNAV.FONT_A - MNAV.FONT_I);
+    const fishH    = MNAV.FISH_A - dist * (MNAV.FISH_A - MNAV.FISH_I);
+    const fishL    = MNAV.FISH_LA - dist * (MNAV.FISH_LA - MNAV.FISH_LI);
+
+    el.style.transform = `translateX(${x.toFixed(1)}px) translateY(calc(-50% + ${y.toFixed(1)}px))`;
+    el.style.opacity   = opacity.toFixed(3);
+
+    const span = el.querySelector('span');
+    if (span) span.style.fontSize = `${Math.round(fontSize)}px`;
+
+    const fish = el.querySelector('.mnav-fish');
+    if (fish) {
+      fish.style.height = `${Math.round(fishH)}px`;
+      fish.style.left   = `${Math.round(fishL)}px`;
+    }
+  });
+}
+
+function mnavSnapTo(from, to) {
+  if (mnavSnapRAF) cancelAnimationFrame(mnavSnapRAF);
+  const start = performance.now();
+  (function tick(now) {
+    const t     = Math.min((now - start) / MNAV.DUR, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    mnavOffset  = from + (to - from) * eased;
+    mnavApply(mnavOffset);
+    mnavSnapRAF = t < 1 ? requestAnimationFrame(tick) : null;
+    if (t >= 1) mnavOffset = to;
+  })(start);
+}
+
+function mnavElastic(v, lo, hi) {
+  if (v > hi) return hi + (v - hi) * 0.3;
+  if (v < lo) return lo + (v - lo) * 0.3;
+  return v;
+}
+
+function mnavReset() {
+  if (mnavSnapRAF) { cancelAnimationFrame(mnavSnapRAF); mnavSnapRAF = null; }
+  mnavOffset   = 0;
+  mnavDragging = false;
+  mnavDragY0   = null;
+  mnavApply(0);
+}
+
+if (mobileNav) {
+  mobileNav.addEventListener('touchstart', e => {
+    if (mnavSnapRAF) { cancelAnimationFrame(mnavSnapRAF); mnavSnapRAF = null; }
+    mnavDragY0  = e.touches[0].clientY;
+    mnavOffset0 = mnavOffset;
+    mnavDragging = false;
+  }, { passive: true });
+
+  mobileNav.addEventListener('touchmove', e => {
+    if (mnavDragY0 === null) return;
+    const dy = e.touches[0].clientY - mnavDragY0;
+    if (!mnavDragging && Math.abs(dy) > MNAV.DRAG_MIN) mnavDragging = true;
+    if (!mnavDragging) return;
+    e.preventDefault();
+    const degPerPx = 180 / (Math.PI * MNAV.R);  // ≈ 0.15 deg/px
+    const raw = mnavOffset0 + dy * degPerPx;
+    mnavOffset = mnavElastic(raw, -MNAV.STEP, MNAV.STEP);
+    mnavApply(mnavOffset);
+  }, { passive: false });
+
+  mobileNav.addEventListener('touchend', () => {
+    mnavDragY0 = null;
+    if (!mnavDragging) return;
+    mnavDragging = false;
+    const snap   = Math.round(mnavOffset / MNAV.STEP) * MNAV.STEP;
+    const target = Math.max(-MNAV.STEP, Math.min(MNAV.STEP, snap));
+    mnavSnapTo(mnavOffset, target);
+  }, { passive: true });
+}
+
+// 초기 배치 적용
+mnavApply(0);
 
 // ─────────────────────────────────────────────────────────
 //  INIT

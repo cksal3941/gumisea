@@ -1082,12 +1082,16 @@ body {
   padding: 20px 0;
 }
 
+/* 항목: JS가 transform/opacity/fontSize/fishHeight를 연속 계산으로 적용 */
 .mnav-item {
   display: flex;
   align-items: center;
   text-decoration: none;
   color: #1a1a1a;
-  position: relative;
+  position: absolute;  /* .mobile-nav(fixed) 기준으로 arc 배치 */
+  top: 50%;
+  left: 0;
+  white-space: nowrap;
 }
 
 .mnav-fish {
@@ -1095,56 +1099,31 @@ body {
   object-fit: contain;
 }
 
-.mnav-contact {
-  gap: 10px;
-  margin-left: 20px;
-}
-
-.mnav-contact .mnav-fish {
-  height: 52px;
-  left: -60px;
-}
-
-.mnav-contact span {
+/* 폰트/컬러만 CSS 고정 — 크기·위치는 JS가 계산 */
+.mnav-contact span,
+.mnav-story span {
   font-family: 'Outfit', sans-serif;
-  font-size: 22px;
   font-weight: 600;
   letter-spacing: 0.05em;
-}
-
-.mnav-shop {
-  margin-left: 60px;
-  margin-top: 16px;
-  margin-bottom: 16px;
-}
-
-.mnav-shop .mnav-fish {
-  height: 100px;
-  left: -110px;
 }
 
 .mnav-shop span {
   font-family: 'Gravitas One', serif;
-  font-size: 72px;
   line-height: 1;
   color: #1a1a1a;
 }
 
-.mnav-story {
-  gap: 10px;
-  margin-left: 20px;
-}
-
-.mnav-story .mnav-fish {
-  height: 48px;
-  left: -58px;
-}
-
-.mnav-story span {
-  font-family: 'Outfit', sans-serif;
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+/* 원호(arc) — 원 중심 x = -200px (화면 왼쪽 바깥), R = 380px */
+.mnav-circle {
+  position: absolute;
+  width: 760px;
+  height: 760px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(26, 26, 26, 0.18);
+  left: -580px;               /* -CX - R = -200 - 380 */
+  top: calc(50% - 380px);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .mobile-nav-copy {
