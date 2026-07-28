@@ -3,6 +3,7 @@
 > 바다 물고기를 모티브로 한 가상의 유기농 구미 젤리 브랜드 랜딩 페이지
 
 **Live** → [gumisea.vercel.app](https://gumisea.vercel.app)  
+**GitHub** → [github.com/cksal3941/gumisea](https://github.com/cksal3941/gumisea)  
 **Design** → [Figma](https://www.figma.com/design/A30eIW3rdki0A2bae7D4Nl/%EA%B5%AC%EB%AF%B8%EC%94%A8-%EB%A0%8C%EB%94%A9%ED%8E%98%EC%9D%B4%EC%A7%80?node-id=0-1&t=hGNAqqpy65ut0i4d-1)
 
 ---
