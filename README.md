@@ -34,14 +34,13 @@ Gumi Sea는 바닷속 물고기 캐릭터에서 영감을 받은 **가상의 구
 
 ## Tech Stack
 
-| 구분 | 사용 기술 |
-|---|---|
-| 마크업 | HTML5 |
-| 스타일 | CSS3 (clamp, custom properties, keyframes) |
-| 인터랙션 | Vanilla JavaScript (ES6+) |
-| 애니메이션 | [anime.js](https://animejs.com/) v3.2.1 |
-| 폰트 | Google Fonts — Outfit · Gravitas One · Limelight |
-| 배포 | [Vercel](https://vercel.com) |
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
+![Google Fonts](https://img.shields.io/badge/Google_Fonts-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![anime.js](https://img.shields.io/badge/anime.js-FF6B6B?style=for-the-badge&logoColor=white)
 
 ---
 
